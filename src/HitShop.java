@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class product {
+public class HitShop {
     public  static void main (String [] args){
         Scanner sc = new Scanner(System.in);
         System.out.println ("Nhap vao ten hang hoa");

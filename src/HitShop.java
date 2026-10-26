@@ -1,3 +1,4 @@
+import javax.net.ssl.SSLContext;
 import java.util.Scanner;
 
 public class HitShop {
@@ -16,8 +17,9 @@ public class HitShop {
         System.out.println ("Thong tin don hang la : ");
         System.out.println ("Ten  hang la : " + hangHoa);
         System.out.println("Don gia la " + donGia);
-        System.out.println ("Thanh tien la " + thanhTien);
-        System.out.println("Tong thanh tien la " + tongThanhTien);
+        System.out.println("So luong la: " + soLuong);
+        System.out.printf ("Thanh tien la " + "%.2f \n" ,thanhTien);
+        System.out.printf("Tong thanh tien la " + "%.2f \n",tongThanhTien);
     }
 }
 

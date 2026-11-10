@@ -102,7 +102,7 @@ public class HitShop {
         do {
             printMenu();
             choice = sc.nextInt();
-            sc.nextLine(); // Xóa dòng thừa sau khi đọc số menu để tránh lỗi bỏ qua lệnh nhập String id ở case 1
+            sc.nextLine();
 
             switch (choice) {
                 case 1 -> readAndAddItem();

@@ -1,126 +1,118 @@
-import javax.sound.midi.Soundbank;
-import java.net.SocketTimeoutException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import  java.util.Scanner;
+import java.util.Scanner;
+import model.Product;
+import model.CartItem;
+import model.Customer;
 
-public class  HitShop {
+public class HitShop {
+    static Scanner sc = new Scanner(System.in);
 
-    static final List <String> names = new ArrayList<>();
-    static final  List <Double> prices = new ArrayList<>();
-    static final  List <Integer> quantities = new ArrayList<>();
-    static void Search (Scanner sc )  {
-        System.out.println("Nhap vao ten mat hang can tim");
-        sc.nextLine();
-        String nameS = sc.nextLine();
-        boolean flag = false;
-        for (int i = 0 ; i < names.size() ; i ++){
+    private static final Customer currentCustomer =
+            new Customer("C01", "Linh Nguyễn", "0900000001");
+    private static final List<CartItem> cart = new ArrayList<>();
 
-            if (names.get(i).toLowerCase().equals (nameS.toLowerCase())){
-                flag = true;
-                double total = quantities.get(i) * prices.get(i);
-                System.out.printf("%d. %s | %.2f | SL  %d | ThanhTien  %.2f%n" ,
-                        i +1,
-                        names.get(i),
-                        prices.get(i),
-                        quantities.get(i),
-                        total);
-            }
-        }
-        if (!flag){
-            System.out.println("Khong co mat hang can tim ");
-        }
-    }
-    static void printItems () {
-        if (names.isEmpty()) {
-            System.out.println("Gio hang trong");
-        }
-        else {
-            System.out.println("Danh sach mat hang la : ");
-            for (int i = 0 ; i < names.size() ; i ++){
-                double total = prices.get(i) * quantities.get(i);
-                System.out.printf("%d. %s | %.2f | SL  %d | ThanhTien  %.2f%n" ,
-                        i +1,
-                        names.get(i),
-                        prices.get(i),
-                        quantities.get(i),
-                        total);
-            }
-        }
-    }
-    static void readAndAddItem (Scanner sc) {
-        sc.nextLine();
-        System.out.println("Nhap vao ten mat hang: ");
-        String name = sc.nextLine() ;
-        System.out.println("Nhap vao gia mat hang: ");
-        double price = sc.nextDouble();
-        System.out.println("Nhap vao so luong mat hang : ");
-        int quantity = sc.nextInt();
-        if (!name.isEmpty() && price > 0  && quantity > 0){
-            names.add (name);
-            prices.add (price);
-            quantities.add(quantity);
-            printItems();
-    }
-    }
-    static void readAndRemoveItem(Scanner sc) {
-        if (names.isEmpty()) {
-            System.out.println("Gio hang trong");
+    static final Product product1 = new Product("P01", "Ao thun", 150000, 20);
+    static final Product product2 = new Product("P02", "Binh nuoc", 50000, 10);
+
+    static void readAndAddItem() {
+        Product iProduct = null;
+        System.out.println("==========Cac san pham san co========= ");
+        System.out.println(product1.getId() + "         " + product1.getName());
+        System.out.println(product2.getId() + "         " + product2.getName());
+
+        System.out.print("Nhap vao id cua product: ");
+        String id = sc.nextLine().trim();
+
+        if (id.equals(product1.getId())) {
+            iProduct = product1;
+        } else if (id.equals(product2.getId())) {
+            iProduct = product2;
+        } else {
+            System.out.println("Khong tim thay san pham ");
             return;
         }
 
-        System.out.println("Nhap vao chi so mat hang muon xoa:");
-        int index = sc.nextInt();
+        System.out.print("Nhap vao so luong cua product: ");
+        int quantity1 = Integer.parseInt(sc.nextLine());
+        if (quantity1 <= 0) {
+            System.out.println("So luong phai lon hon 0");
+        } else {
+            CartItem cartItem = new CartItem(iProduct, quantity1);
+            cart.add(cartItem);
+            System.out.println("Đã thêm vào giỏ thành công.");
+        }
+    }
 
-        if (index < 1 || index > names.size()) {
-            System.out.println("Khong ton tai mat hang");
+    static void readAndRemoveItem() {
+        if (cart.isEmpty()) {
+            System.out.println("Gio hang trong");
             return;
         }
+        System.out.println("=========== Danh sach mat hang trong gio==========");
+        for (int i = 0; i < cart.size(); i++) {
+            Product p = cart.get(i).getProduct();
+            System.out.println((i + 1) + " . " + p.getName() + " | SL: " + cart.get(i).getQuantity());
+        }
 
-        index--;
-        names.remove(index);
-        prices.remove(index);
-        quantities.remove(index);
-
-        printItems();
+        System.out.print("Nhap so thu tu muon xoa: ");
+        int displayNumber = Integer.parseInt(sc.nextLine());
+        if (displayNumber < 1 || displayNumber > cart.size()) {
+            System.out.println("Khong tim thay mat hang");
+        } else {
+            cart.remove(displayNumber - 1);
+            System.out.println("Xoa mat hang thanh cong.");
+        }
     }
-    static double calculateTotal () {
+
+    static void printItems() {
+        System.out.println("==================Thong tin gio hang==============");
+        System.out.println(currentCustomer.toString());
+        if (cart.isEmpty()) {
+            System.out.println("Giỏ hàng đang trống.");
+        } else {
+            for (int i = 0; i < cart.size(); i++) {
+                Product product = cart.get(i).getProduct();
+                System.out.println((i + 1) + ". " + product.getId() + " | " + product.getName() + " | " + product.getPrice() + " | SL: " + cart.get(i).getQuantity() + " | Thanh tien: " + cart.get(i).getTotal());
+            }
+        }
+    }
+
+    static double calculateTotal() {
         double total = 0;
-        for (int i = 0; i < names.size(); i++) {
-            total += prices.get(i) * quantities.get(i);
-        }
-        if (total != 0){
-           total = total * (1.0 /10 + 1) + 20000;
+        for (int i = 0; i < cart.size(); i++) {
+            total += cart.get(i).getTotal();
         }
         return total;
     }
 
     static void printMenu() {
-        System.out.println("---------------------Menu----------------------");
+        System.out.println("\n---------------------Menu----------------------");
         System.out.println("1. Thêm mặt hàng");
         System.out.println("2. Xóa mặt hàng");
         System.out.println("3. Xem giỏ");
         System.out.println("4. Xem tổng tiền");
-        System.out.println("5. Tim kiem hang da dat");
+        System.out.println("5. Số đối tượng Product được tạo la ");
         System.out.println("0. Thoát");
+        System.out.print("Nhập lựa chọn của bạn: ");
     }
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
         int choice;
         do {
             printMenu();
             choice = sc.nextInt();
+            sc.nextLine(); // Xóa dòng thừa sau khi đọc số menu để tránh lỗi bỏ qua lệnh nhập String id ở case 1
+
             switch (choice) {
-                case 1 -> readAndAddItem(sc);
-                case 2 -> readAndRemoveItem(sc);
+                case 1 -> readAndAddItem();
+                case 2 -> readAndRemoveItem();
                 case 3 -> printItems();
                 case 4 -> System.out.println("Tổng tiền: " + calculateTotal());
-                case 5 -> Search(sc);
+                case 5 -> System.out.println("So san pham da tao la " +  Product.getCount());
                 case 0 -> System.out.println("Kết thúc.");
                 default -> System.out.println("Lựa chọn không hợp lệ.");
             }
-        }while (choice != 0);
+        } while (choice != 0);
     }
 }

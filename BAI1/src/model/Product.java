@@ -54,4 +54,9 @@ public class Product {
    public String toString (){
        return this.id   + " | " + this.name + " | " + this.price + "  |  " + this.stock;
    }
+
+   public boolean isExpensive (){
+       if (this.price > 10000) return true;
+       else return false;
+   }
 }

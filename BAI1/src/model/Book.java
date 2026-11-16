@@ -1,0 +1,20 @@
+package model;
+
+public class Book extends Product {
+     private String author ;
+     public Book (String id , String name , double price , int stock , String author){
+         super(id , name , price , stock);
+         this.author = author ;
+     }
+     public void setAuthor (String  newAuthor){
+         this.author = newAuthor;
+     }
+     public  String getAuthor (){
+         return  this.author;
+     }
+     @Override
+    public boolean isExpensive (){
+         if (getPrice() > 20000) return true;
+         else return false;
+     }
+}

@@ -2,7 +2,7 @@ package model;
 
 import java.util.Scanner;
 
-public class Product {
+public abstract class Product {
    private String id ;
    private String name;
    private  double price ;
@@ -52,11 +52,10 @@ public class Product {
    }
 
    public String toString (){
-       return this.id   + " | " + this.name + " | " + this.price + "  |  " + this.stock;
+       return "id san pham :" + this.id   + " | ten san pham: " + this.name + " | gia cua san pham: " + this.price + "  | gio hang: " + this.stock;
    }
 
-   public boolean isExpensive (){
-       if (this.price > 10000) return true;
-       else return false;
-   }
+   public abstract boolean isExpensive ();
+
+
 }
